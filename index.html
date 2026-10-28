@@ -61,7 +61,7 @@
 <body>
 
     <div class="card" id="cardBox">
-        <h1 id="titleText">SKATE SCORE</h1>
+        <h1 id="titleText">TOTAL SCORE</h1>
         <div class="char-name" id="charName">読み込み中...</div>
         <div class="score-container" id="scoreValue">--</div>
         <div class="message" id="messageText">NFCタグを読み込みました</div>
@@ -79,11 +79,11 @@
 
         // キャラクターごとの設定データ
         const characterData = {
-            'yellow': { name: 'E', color: '#ffcc00', bg: 'linear-gradient(135deg, #2b2611, #40381a)' },
-            'blue':   { name: 'I',   color: '#00ccff', bg: 'linear-gradient(135deg, #11222b, #1a3440)' },
-            'purple': { name: 'C', color: '#cc00ff', bg: 'linear-gradient(135deg, #26112b, #381a40)' },
-            'red':    { name: 'M',   color: '#ff3333', bg: 'linear-gradient(135deg, #2b1111, #401a1a)' },
-            'green':  { name: 'S', color: '#33ff33', bg: 'linear-gradient(135deg, #112b11, #1a401a)' }
+            'E': { name: 'E Electrical', color: '#ffcc00', bg: 'linear-gradient(135deg, #2b2611, #40381a)' },
+            'I':   { name: 'I Information',   color: '#00ccff', bg: 'linear-gradient(135deg, #11222b, #1a3440)' },
+            'C': { name: 'C Chemical', color: '#cc00ff', bg: 'linear-gradient(135deg, #26112b, #381a40)' },
+            'M':    { name: 'M Mechanical',   color: '#ff3333', bg: 'linear-gradient(135deg, #2b1111, #401a1a)' },
+            'S':  { name: 'S Control', color: '#33ff33', bg: 'linear-gradient(135deg, #112b11, #1a401a)' }
         };
 
         if (char && characterData[char]) {
