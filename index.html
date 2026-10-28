@@ -24,37 +24,53 @@
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
             border: 2px solid var(--theme-color);
-            padding: 40px;
+            padding: 30px;
             border-radius: 20px;
             text-align: center;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px var(--theme-color);
-            width: 80%;
+            width: 85%;
             max-width: 400px;
             transition: all 0.5s ease;
         }
         h1 {
-            font-size: 1rem;
+            font-size: 0.9rem;
             color: #a0a0c0;
             margin-bottom: 5px;
             letter-spacing: 1px;
         }
         .char-name {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             font-weight: bold;
             color: var(--theme-color);
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
         .score-container {
-            font-size: 4rem;
+            font-size: 3.5rem;
             font-weight: bold;
             color: var(--theme-color);
             text-shadow: 0 0 15px var(--theme-color);
             margin: 10px 0;
         }
         .message {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: #d0d0e0;
-            margin-top: 15px;
+            margin-bottom: 20px;
+        }
+        .form-button {
+            display: inline-block;
+            background: var(--theme-color);
+            color: #1e1e2f;
+            padding: 12px 24px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+        .form-button:hover {
+            opacity: 0.9;
+            transform: scale(1.05);
         }
     </style>
 </head>
@@ -65,19 +81,24 @@
         <div class="char-name" id="charName">読み込み中...</div>
         <div class="score-container" id="scoreValue">--</div>
         <div class="message" id="messageText">NFCタグを読み込みました</div>
+        
+        <!-- Googleフォームへのリンクボタン -->
+        <a id="formLink" href="https://docs.google.com/forms/d/1tBUoU5IAxAHcVR__tkuz1O63Bt6C98Ol8I9bn_ejSPo/viewform" target="_blank" class="form-button">
+            📝 スコアを送信・アンケートに答える
+        </a>
     </div>
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
-        const char = urlParams.get('char'); // キャラクター識別用 (yellow, blue, purple, red, green)
+        const char = urlParams.get('char'); 
         const score = urlParams.get('score');
         
         const charElement = document.getElementById('charName');
         const scoreElement = document.getElementById('scoreValue');
         const messageElement = document.getElementById('messageText');
-        const cardBox = document.getElementById('cardBox');
+        const formLink = document.getElementById('formLink');
 
-        // キャラクターごとの設定データ
+        // キャラクターごとの設定データ（カラーや背景）
         const characterData = {
             'E': { name: 'E Electrical', color: '#ffcc00', bg: 'linear-gradient(135deg, #2b2611, #40381a)' },
             'I':   { name: 'I Information',   color: '#00ccff', bg: 'linear-gradient(135deg, #11222b, #1a3440)' },
@@ -88,7 +109,6 @@
 
         if (char && characterData[char]) {
             const currentData = characterData[char];
-            // 画面の色やテーマをキャラに合わせて変更
             document.documentElement.style.setProperty('--theme-color', currentData.color);
             document.documentElement.style.setProperty('--bg-gradient', currentData.bg);
             charElement.textContent = currentData.name;
@@ -100,13 +120,16 @@
             scoreElement.textContent = score;
             const numScore = Number(score);
             if (numScore >= 90) {
-                messageElement.textContent = "🔥大成功！";
+                messageElement.textContent = "🔥Fantastic!";
             } else {
-                messageElement.textContent = "👍 次回もこの調子で行こう！";
+                messageElement.textContent = "👍 Nice！";
             }
+
+            // （応用）もしGoogleフォーム側にスコアやキャラクター情報を自動で引き渡したい場合は、
+            // フォーム側のエントリーIDを使ってURLを組み立てることも可能です！
         } else {
             scoreElement.textContent = "ERR";
-            messageElement.textContent = "記録スコアが見つかりません！";
+            messageElement.textContent = "スコアが指定されていません";
         }
     </script>
 </body>
