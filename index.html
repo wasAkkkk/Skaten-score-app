@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>キャラ別スコア結果</title>
+    <title>バトル結果</title>
     <style>
         :root {
             --theme-color: #00ffcc;
@@ -33,38 +33,64 @@
             transition: all 0.5s ease;
         }
         h1 {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             color: #a0a0c0;
-            margin-bottom: 5px;
+            margin-bottom: 2px;
             letter-spacing: 1px;
         }
         .char-name {
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             font-weight: bold;
             color: var(--theme-color);
             margin-bottom: 15px;
         }
-        .score-container {
-            font-size: 3.5rem;
-            font-weight: bold;
-            color: var(--theme-color);
-            text-shadow: 0 0 15px var(--theme-color);
+        /* Win / Lose を目立つように大きく表示 */
+        .result-banner {
+            font-size: 3.2rem;
+            font-weight: 900;
+            letter-spacing: 2px;
             margin: 10px 0;
+            text-transform: uppercase;
         }
-        .message {
-            font-size: 0.85rem;
-            color: #d0d0e0;
-            margin-bottom: 20px;
+        .win {
+            color: #ffd700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.6), 0 0 40px rgba(255, 215, 0, 0.3);
+        }
+        .lose {
+            color: #ff3344;
+            text-shadow: 0 0 20px rgba(255, 51, 68, 0.6), 0 0 40px rgba(255, 51, 68, 0.3);
+        }
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 12px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .stat-box {
+            text-align: center;
+        }
+        .stat-label {
+            font-size: 0.75rem;
+            color: #a0a0c0;
+            margin-bottom: 4px;
+        }
+        .stat-value {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: #fff;
         }
         .form-button {
             display: inline-block;
             background: var(--theme-color);
             color: #1e1e2f;
-            padding: 12px 24px;
+            padding: 10px 20px;
             border-radius: 30px;
             text-decoration: none;
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
             transition: transform 0.2s ease, opacity 0.2s ease;
         }
@@ -77,14 +103,27 @@
 <body>
 
     <div class="card" id="cardBox">
-        <h1 id="titleText">TOTAL SCORE</h1>
+        <h1 id="titleText">BATTLE RESULT</h1>
         <div class="char-name" id="charName">読み込み中...</div>
-        <div class="score-container" id="scoreValue">--</div>
-        <div class="message" id="messageText">NFCタグを読み込みました</div>
+        
+        <!-- Win / Lose の大きく目立つ表示 -->
+        <div class="result-banner" id="resultBanner">--</div>
+
+        <!-- スコア・ダメージの内訳表示 -->
+        <div class="stats-container">
+            <div class="stat-box">
+                <div class="stat-label">SCORE</div>
+                <div class="stat-value" id="scoreValue">--</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">DAMAGE</div>
+                <div class="stat-value" id="damageValue">--</div>
+            </div>
+        </div>
         
         <!-- Googleフォームへのリンクボタン -->
-        <a id="formLink" href="https://docs.google.com/forms/d/e/1FAIpQLScUW6lqtMgDWpG8Ny-9kZUI3xASsP9b4IO1pmZGd69bxX3Grw/viewform?usp=publish-editor" target="_blank" class="form-button">
-            📝 アンケート募集中です！
+        <a id="formLink" href="https://docs.google.com/forms/d/e/1FAIpQLScUW6lqtMgDWpG8Ny-9kZUI3xASsP9b4IO1pmZGd69bxX3Grw/viewform?usp=header" target="_blank" class="form-button">
+            📝 アンケートに回答
         </a>
     </div>
 
@@ -92,15 +131,17 @@
         const urlParams = new URLSearchParams(window.location.search);
         const char = urlParams.get('char'); 
         const score = urlParams.get('score');
+        const result = urlParams.get('result'); // 'win' または 'lose'
+        const damage = urlParams.get('damage'); // ダメージスコア数値
         
         const charElement = document.getElementById('charName');
         const scoreElement = document.getElementById('scoreValue');
-        const messageElement = document.getElementById('messageText');
-        const formLink = document.getElementById('formLink');
+        const damageElement = document.getElementById('damageValue');
+        const resultBanner = document.getElementById('resultBanner');
 
-        // キャラクターごとの設定データ（カラーや背景）
+        // キャラクターごとの設定データ
         const characterData = {
-            'E': { name: 'E Electrical', color: '#ffcc00', bg: 'linear-gradient(135deg, #2b2611, #40381a)' },
+           'E': { name: 'E Electrical', color: '#ffcc00', bg: 'linear-gradient(135deg, #2b2611, #40381a)' },
             'I':   { name: 'I Information',   color: '#00ccff', bg: 'linear-gradient(135deg, #11222b, #1a3440)' },
             'C': { name: 'C Chemical', color: '#cc00ff', bg: 'linear-gradient(135deg, #26112b, #381a40)' },
             'M':    { name: 'M Mechanical',   color: '#ff3333', bg: 'linear-gradient(135deg, #2b1111, #401a1a)' },
@@ -113,23 +154,36 @@
             document.documentElement.style.setProperty('--bg-gradient', currentData.bg);
             charElement.textContent = currentData.name;
         } else {
-            charElement.textContent = "スタンダード";
+            charElement.textContent = "ファイター";
         }
 
+        // 勝敗の表示切替
+        if (result) {
+            const lowerResult = result.toLowerCase();
+            if (lowerResult === 'win') {
+                resultBanner.textContent = "VICTORY";
+                resultBanner.className = "result-banner win";
+            } else if (lowerResult === 'lose') {
+                resultBanner.textContent = "DEFEAT";
+                resultBanner.className = "result-banner lose";
+            } else {
+                resultBanner.textContent = result.toUpperCase();
+            }
+        } else {
+            resultBanner.textContent = "RESULT";
+        }
+
+        // スコア・ダメージの設定
         if (score !== null) {
             scoreElement.textContent = score;
-            const numScore = Number(score);
-            if (numScore >= 90) {
-                messageElement.textContent = "🔥Fantastic!";
-            } else {
-                messageElement.textContent = "👍 Nice！";
-            }
-
-            // （応用）もしGoogleフォーム側にスコアやキャラクター情報を自動で引き渡したい場合は、
-            // フォーム側のエントリーIDを使ってURLを組み立てることも可能です！
         } else {
-            scoreElement.textContent = "ERR";
-            messageElement.textContent = "スコアが指定されていません";
+            scoreElement.textContent = "-";
+        }
+
+        if (damage !== null) {
+            damageElement.textContent = damage;
+        } else {
+            damageElement.textContent = "-";
         }
     </script>
 </body>
