@@ -79,11 +79,11 @@
 
         // キャラクターごとの設定データ
         const characterData = {
-            'yellow': { name: 'イエローキャラ', color: '#ffcc00', bg: 'linear-gradient(135deg, #2b2611, #40381a)' },
-            'blue':   { name: 'ブルーキャラ',   color: '#00ccff', bg: 'linear-gradient(135deg, #11222b, #1a3440)' },
-            'purple': { name: 'パープルキャラ', color: '#cc00ff', bg: 'linear-gradient(135deg, #26112b, #381a40)' },
-            'red':    { name: 'レッドキャラ',   color: '#ff3333', bg: 'linear-gradient(135deg, #2b1111, #401a1a)' },
-            'green':  { name: 'グリーンキャラ', color: '#33ff33', bg: 'linear-gradient(135deg, #112b11, #1a401a)' }
+            'yellow': { name: 'E', color: '#ffcc00', bg: 'linear-gradient(135deg, #2b2611, #40381a)' },
+            'blue':   { name: 'I',   color: '#00ccff', bg: 'linear-gradient(135deg, #11222b, #1a3440)' },
+            'purple': { name: 'C', color: '#cc00ff', bg: 'linear-gradient(135deg, #26112b, #381a40)' },
+            'red':    { name: 'M',   color: '#ff3333', bg: 'linear-gradient(135deg, #2b1111, #401a1a)' },
+            'green':  { name: 'S', color: '#33ff33', bg: 'linear-gradient(135deg, #112b11, #1a401a)' }
         };
 
         if (char && characterData[char]) {
@@ -100,13 +100,13 @@
             scoreElement.textContent = score;
             const numScore = Number(score);
             if (numScore >= 90) {
-                messageElement.textContent = "🔥 素晴らしい！大成功です！";
+                messageElement.textContent = "🔥大成功！";
             } else {
                 messageElement.textContent = "👍 次回もこの調子で行こう！";
             }
         } else {
             scoreElement.textContent = "ERR";
-            messageElement.textContent = "スコアが指定されていません";
+            messageElement.textContent = "記録スコアが見つかりません！";
         }
     </script>
 </body>
