@@ -16,15 +16,16 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             margin: 0;
+            padding: 20px 0;
             transition: background 0.5s ease;
         }
         .card {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
             border: 2px solid var(--theme-color);
-            padding: 30px;
+            padding: 25px;
             border-radius: 20px;
             text-align: center;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px var(--theme-color);
@@ -42,14 +43,27 @@
             font-size: 1.2rem;
             font-weight: bold;
             color: var(--theme-color);
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
-        /* Win / Lose を目立つように大きく表示 */
+        /* キャラクター画像枠のスタイル */
+        .char-image-container {
+            margin: 10px 0;
+            height: 160px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .char-image {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+            filter: drop-shadow(0 0 10px var(--theme-color));
+        }
         .result-banner {
-            font-size: 3.2rem;
+            font-size: 3rem;
             font-weight: 900;
             letter-spacing: 2px;
-            margin: 10px 0;
+            margin: 5px 0;
             text-transform: uppercase;
         }
         .win {
@@ -64,9 +78,9 @@
             display: flex;
             justify-content: space-around;
             background: rgba(0, 0, 0, 0.2);
-            padding: 12px;
+            padding: 10px;
             border-radius: 12px;
-            margin: 20px 0;
+            margin: 15px 0;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
         .stat-box {
@@ -106,6 +120,11 @@
         <h1 id="titleText">BATTLE RESULT</h1>
         <div class="char-name" id="charName">読み込み中...</div>
         
+        <!-- キャラクター画像表示領域 -->
+        <div class="char-image-container">
+            <img id="charImg" class="char-image" src="" alt="キャラ画像" style="display: none;">
+        </div>
+
         <!-- Win / Lose の大きく目立つ表示 -->
         <div class="result-banner" id="resultBanner">--</div>
 
@@ -122,8 +141,8 @@
         </div>
         
         <!-- Googleフォームへのリンクボタン -->
-        <a id="formLink" href="https://docs.google.com/forms/d/e/1FAIpQLScUW6lqtMgDWpG8Ny-9kZUI3xASsP9b4IO1pmZGd69bxX3Grw/viewform?usp=header" target="_blank" class="form-button">
-            📝 アンケートに回答
+        <a id="formLink" href="https://docs.google.com/forms/d/1tBUoU5IAxAHcVR__tkuz1O63Bt6C98Ol8I9bn_ejSPo/viewform" target="_blank" class="form-button">
+            📝 結果をフォームに送信
         </a>
     </div>
 
@@ -131,21 +150,22 @@
         const urlParams = new URLSearchParams(window.location.search);
         const char = urlParams.get('char'); 
         const score = urlParams.get('score');
-        const result = urlParams.get('result'); // 'win' または 'lose'
-        const damage = urlParams.get('damage'); // ダメージスコア数値
+        const result = urlParams.get('result'); 
+        const damage = urlParams.get('damage'); 
         
         const charElement = document.getElementById('charName');
+        const charImgElement = document.getElementById('charImg');
         const scoreElement = document.getElementById('scoreValue');
         const damageElement = document.getElementById('damageValue');
         const resultBanner = document.getElementById('resultBanner');
 
-        // キャラクターごとの設定データ
+        // キャラクターごとの設定データ（名前、カラー、背景、画像ファイル名）
         const characterData = {
-           'E': { name: 'E Electrical', color: '#ffcc00', bg: 'linear-gradient(135deg, #2b2611, #40381a)' },
-            'I':   { name: 'I Information',   color: '#00ccff', bg: 'linear-gradient(135deg, #11222b, #1a3440)' },
-            'C': { name: 'C Chemical', color: '#cc00ff', bg: 'linear-gradient(135deg, #26112b, #381a40)' },
-            'M':    { name: 'M Mechanical',   color: '#ff3333', bg: 'linear-gradient(135deg, #2b1111, #401a1a)' },
-            'S':  { name: 'S Control', color: '#33ff33', bg: 'linear-gradient(135deg, #112b11, #1a401a)' }
+             'E': { name: 'E Electrical', color: '#ffcc00', bg: 'linear-gradient(135deg, #2b2611, #40381a)', img: 'katenE.tiff' },
+            'I':   { name: 'I Information',   color: '#00ccff', bg: 'linear-gradient(135deg, #11222b, #1a3440)', img: 'katenI.tiffg' },
+            'C': { name: 'C Chemical', color: '#cc00ff', bg: 'linear-gradient(135deg, #26112b, #381a40)', img: 'katenC.tiff' },
+            'M':    { name: 'M Mechanical',   color: '#ff3333', bg: 'linear-gradient(135deg, #2b1111, #401a1a)', img: 'katenM.tiff' },
+            'S':  { name: 'S Control', color: '#33ff33', bg: 'linear-gradient(135deg, #112b11, #1a401a)', img: 'katenS.tiff' }
         };
 
         if (char && characterData[char]) {
@@ -153,11 +173,17 @@
             document.documentElement.style.setProperty('--theme-color', currentData.color);
             document.documentElement.style.setProperty('--bg-gradient', currentData.bg);
             charElement.textContent = currentData.name;
+            
+            // 画像の設定
+            if (currentData.img) {
+                charImgElement.src = currentData.img;
+                charImgElement.style.display = 'block';
+            }
         } else {
             charElement.textContent = "ファイター";
         }
 
-        // 勝敗の表示切替
+        // 勝敗表示の判定
         if (result) {
             const lowerResult = result.toLowerCase();
             if (lowerResult === 'win') {
@@ -173,18 +199,9 @@
             resultBanner.textContent = "RESULT";
         }
 
-        // スコア・ダメージの設定
-        if (score !== null) {
-            scoreElement.textContent = score;
-        } else {
-            scoreElement.textContent = "-";
-        }
-
-        if (damage !== null) {
-            damageElement.textContent = damage;
-        } else {
-            damageElement.textContent = "-";
-        }
+        // スコアとダメージの設定
+        scoreElement.textContent = score !== null ? score : "-";
+        damageElement.textContent = damage !== null ? damage : "-";
     </script>
 </body>
 </html>
