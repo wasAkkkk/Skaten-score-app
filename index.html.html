@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>NFCスコア表示</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; margin-top: 50px; background: #f4f4f9; }
+        .card { background: white; padding: 30px; border-radius: 12px; display: inline-block; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        h1 { color: #333; }
+        .score { font-size: 64px; color: #ff5722; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>現在のスコア</h1>
+        <div class="score" id="scoreValue">読み込み中...</div>
+    </div>
+
+    <script>
+        // URLのパラメータ（例: ?score=95）を取得して表示する
+        const urlParams = new URLSearchParams(window.location.search);
+        const score = urlParams.get('score');
+        
+        const scoreElement = document.getElementById('scoreValue');
+        if (score) {
+            scoreElement.textContent = score + " 点";
+        } else {
+            scoreElement.textContent = "スコアが指定されていません";
+        }
+    </script>
+</body>
+</html>
